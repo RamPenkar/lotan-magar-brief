@@ -4,7 +4,6 @@
 ==================================================================== */
 
 :root {
-  /* warm cream surface, dark warm ink, single committed accent */
   --bg: oklch(0.965 0.008 70);
   --bg-deep: oklch(0.925 0.014 65);
   --bg-clay: oklch(0.875 0.025 55);
@@ -49,7 +48,7 @@ body {
 ::selection { background: var(--accent); color: var(--paper); }
 
 /* --------------------------------------------------------------------
-   Corner UI: counter + brand mark
+   Corner UI
 -------------------------------------------------------------------- */
 
 .corner-counter {
@@ -61,7 +60,6 @@ body {
   font-weight: 500;
   font-size: 13px;
   letter-spacing: 0.02em;
-  color: var(--ink-soft);
   display: flex;
   align-items: baseline;
   gap: 4px;
@@ -81,7 +79,6 @@ body {
   font-size: 13px;
   font-weight: 500;
   line-height: 1.15;
-  color: var(--ink-soft);
   text-align: end;
   mix-blend-mode: difference;
   color: oklch(0.88 0.015 60);
@@ -237,7 +234,7 @@ body {
 }
 
 /* --------------------------------------------------------------------
-   Section: intro
+   Intro
 -------------------------------------------------------------------- */
 
 .intro { padding: var(--pad-y) 0; }
@@ -262,7 +259,7 @@ body {
 }
 
 /* --------------------------------------------------------------------
-   Chapter markers (חלק א׳, חלק ב׳)
+   Chapter markers
 -------------------------------------------------------------------- */
 
 .chapter {
@@ -303,12 +300,6 @@ body {
   max-width: var(--max);
   margin: 0 auto;
 }
-.chapter-title-sm {
-  font-size: clamp(32px, 5vw, 72px);
-  line-height: 1.05;
-  font-weight: 700;
-  max-width: 22ch;
-}
 .chapter-desc {
   font-size: clamp(18px, 1.6vw, 22px);
   color: var(--ink-soft);
@@ -317,7 +308,6 @@ body {
   max-width: var(--max);
   margin-inline: auto;
 }
-.chapter-sub { background: var(--bg-deep); }
 
 /* --------------------------------------------------------------------
    Content blocks
@@ -463,54 +453,156 @@ body {
 }
 .comp-con { color: var(--ink); }
 
-/* Advantages */
-.advantage-list {
-  list-style: none;
-  margin: 48px 0 0;
-  display: grid;
-  gap: 0;
+/* --------------------------------------------------------------------
+   Advantages, restructured
+   Each row breaks out of the 70ch col-main constraint via .adv-wrap.
+-------------------------------------------------------------------- */
+
+.adv-wrap {
+  max-width: var(--max);
+  margin: clamp(40px, 6vh, 64px) auto 0;
+  padding-inline: var(--gutter);
 }
-.advantage-list li {
+@media (min-width: 900px) {
+  .adv-wrap {
+    padding-inline-start: calc(var(--gutter) + 200px + clamp(48px, 7vw, 120px));
+  }
+}
+@media (min-width: 1400px) {
+  .adv-wrap {
+    padding-inline-start: calc(var(--gutter) + 240px + clamp(48px, 7vw, 120px));
+  }
+}
+
+.adv-list {
+  list-style: none;
   display: grid;
-  grid-template-columns: minmax(60px, 80px) 1fr;
-  gap: clamp(20px, 3vw, 40px);
-  padding: 40px 0;
+}
+.adv {
+  display: grid;
+  grid-template-columns: minmax(80px, 140px) minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 56px);
+  padding: clamp(36px, 5vh, 56px) 0;
   border-bottom: 1px solid var(--line);
   align-items: baseline;
 }
-.advantage-list li:first-child { border-top: 1px solid var(--line-strong); }
+.adv:first-child { border-top: 1px solid var(--line-strong); }
 .adv-num {
   font-weight: 800;
-  font-size: clamp(28px, 3vw, 44px);
+  font-size: clamp(44px, 6vw, 88px);
   color: var(--accent);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.04em;
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
-.advantage-list h4 {
-  font-size: clamp(22px, 2.2vw, 30px);
+.adv-body {
+  max-width: 60ch;
+}
+.adv-body h4 {
+  font-size: clamp(22px, 2.4vw, 32px);
   font-weight: 700;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   letter-spacing: -0.02em;
-  line-height: 1.2;
+  line-height: 1.15;
+  color: var(--ink);
 }
-.advantage-list p {
+.adv-body p {
   color: var(--ink-soft);
+  font-size: clamp(15px, 1.3vw, 17px);
+  line-height: 1.6;
   margin: 0;
-  line-height: 1.55;
-  font-size: 16px;
 }
-.advantage-list em {
+.adv-body em {
   font-style: normal;
   font-weight: 600;
   color: var(--ink);
 }
+@media (max-width: 600px) {
+  .adv {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 32px 0;
+  }
+  .adv-num { font-size: 40px; }
+}
 
 /* --------------------------------------------------------------------
-   Pillars
+   Pillars overview index (table of contents for chapter ב)
 -------------------------------------------------------------------- */
 
-.pillar { padding: var(--pad-y) 0; }
+.pillars-index { padding: clamp(72px, 12vh, 140px) 0 var(--pad-y); }
+.pillars-overview {
+  list-style: none;
+  margin: 0;
+}
+.po-item {
+  border-bottom: 1px solid var(--line);
+}
+.po-item:first-child { border-top: 1px solid var(--line-strong); }
+.po-item a {
+  display: grid;
+  grid-template-columns: minmax(70px, 100px) minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 48px);
+  padding: clamp(28px, 4vh, 44px) 0;
+  text-decoration: none;
+  color: inherit;
+  align-items: baseline;
+  transition: background 0.3s var(--ease), padding 0.3s var(--ease);
+}
+.po-item a:hover {
+  background: oklch(0.55 0.155 38 / 0.04);
+  padding-inline-start: clamp(12px, 2vw, 24px);
+  padding-inline-end: clamp(12px, 2vw, 24px);
+}
+.po-num {
+  font-weight: 700;
+  font-size: clamp(18px, 1.6vw, 22px);
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.po-content { display: block; }
+.po-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  background: oklch(0.55 0.155 38 / 0.12);
+  padding: 4px 10px;
+  border-radius: 2px;
+  margin-bottom: 12px;
+}
+.po-title {
+  font-size: clamp(24px, 3vw, 40px);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  margin-bottom: 10px;
+  color: var(--ink);
+  transition: color 0.3s var(--ease);
+}
+.po-item a:hover .po-title { color: var(--accent); }
+.po-blurb {
+  font-size: clamp(15px, 1.3vw, 17px);
+  color: var(--ink-soft);
+  line-height: 1.5;
+  max-width: 50ch;
+}
+@media (max-width: 600px) {
+  .po-item a {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 24px 0;
+  }
+}
+
+/* --------------------------------------------------------------------
+   Pillars (deep dives)
+-------------------------------------------------------------------- */
+
+.pillar { padding: var(--pad-y) 0; scroll-margin-top: 80px; }
 .pillar-new { padding-block: clamp(72px, 12vh, 140px); }
 
 .pillar-idea {
@@ -536,9 +628,7 @@ body {
   line-height: 1.4;
 }
 
-.format-group {
-  margin-bottom: 40px;
-}
+.format-group { margin-bottom: 40px; }
 .format-name {
   font-size: 14px;
   font-weight: 600;
@@ -575,7 +665,7 @@ body {
 .format-list-flat li { font-size: 17px; color: var(--ink); }
 
 /* --------------------------------------------------------------------
-   Caution blocks (regular + dark)
+   Cautions
 -------------------------------------------------------------------- */
 
 .caution {
@@ -586,10 +676,7 @@ body {
 }
 .caution + .caution { border-top: none; }
 
-.caution-mark {
-  color: var(--ink);
-  font-weight: 900;
-}
+.caution-mark { color: var(--ink); font-weight: 900; }
 .caution-tag {
   text-transform: uppercase;
   letter-spacing: 0.18em;
@@ -639,7 +726,6 @@ body {
   letter-spacing: -0.02em;
 }
 
-/* Final caution: dark inversion */
 .caution-dark {
   background: var(--bg-ink);
   border-top-color: oklch(0.35 0.020 60);
@@ -661,9 +747,8 @@ body {
 }
 .ops-list li {
   counter-increment: ops;
-  padding: 28px 0 28px 60px;
+  padding: 28px 0;
   padding-inline-start: 60px;
-  padding-inline-end: 0;
   position: relative;
   border-top: 1px solid var(--line);
   font-size: 17px;
@@ -745,10 +830,6 @@ body {
 }
 .reveal-words.in .word { opacity: 1; transform: translateY(0); }
 
-/* --------------------------------------------------------------------
-   Accessibility
--------------------------------------------------------------------- */
-
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -767,7 +848,6 @@ body {
   .stat-block { gap: 16px; }
   .corner-counter, .corner-mark { font-size: 11px; }
   .corner-counter { gap: 3px; }
-  .advantage-list li { grid-template-columns: 1fr; gap: 8px; padding: 32px 0; }
   .ops-list li { padding-inline-start: 44px; }
   .ops-list li::before { font-size: 18px; top: 28px; }
   .lead { font-size: 22px; }
