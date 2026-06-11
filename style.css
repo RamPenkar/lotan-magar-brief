@@ -17,6 +17,8 @@
   --accent: oklch(0.55 0.155 38);
   --accent-soft: oklch(0.78 0.080 45);
   --paper: oklch(0.965 0.008 70);
+  --white: oklch(0.98 0.005 70);
+  --orange: oklch(0.74 0.17 50);
 
   --max: 1440px;
   --gap: clamp(20px, 4vw, 64px);
@@ -456,7 +458,6 @@ body {
 
 /* --------------------------------------------------------------------
    Advantages, restructured
-   Each row breaks out of the 70ch col-main constraint via .adv-wrap.
 -------------------------------------------------------------------- */
 
 .adv-wrap {
@@ -528,7 +529,7 @@ body {
 }
 
 /* --------------------------------------------------------------------
-   Pillars overview index (table of contents for chapter ב)
+   Pillars overview index
 -------------------------------------------------------------------- */
 
 .pillars-index { padding: clamp(72px, 12vh, 140px) 0 var(--pad-y); }
@@ -729,23 +730,38 @@ body {
   letter-spacing: -0.02em;
 }
 
-/* Dark caution: inverse palette.
-   Sets color on container so all descendants inherit a light default;
-   strong/em/etc. override on top. */
+/* ====================================================================
+   DARK CAUTION (section 9): white text, orange emphasis.
+   !important to defeat any inherited or specific cascade rules.
+==================================================================== */
+
 .caution-dark {
-  background: var(--bg-ink);
-  color: var(--ink-dark-bg);
-  border-top-color: oklch(0.35 0.020 60);
-  border-bottom-color: oklch(0.35 0.020 60);
+  background: var(--bg-ink) !important;
+  border-top-color: oklch(0.35 0.020 60) !important;
+  border-bottom-color: oklch(0.35 0.020 60) !important;
 }
-.caution-dark .caution-mark { color: var(--paper); }
-.caution-dark .caution-tag { color: oklch(0.65 0.014 60); }
-.caution-dark .caution-title { color: var(--paper); }
-.caution-dark p { color: var(--ink-dark-bg); }
-.caution-dark .caution-list li { color: var(--ink-dark-bg); }
-.caution-dark strong { color: var(--paper); }
-.caution-dark em { color: var(--accent-soft); }
-.caution-list-dark li::before { color: var(--accent-soft); }
+
+.caution-dark,
+.caution-dark *,
+.caution-dark p,
+.caution-dark li,
+.caution-dark ul,
+.caution-dark ol,
+.caution-dark h4,
+.caution-dark .caution-title,
+.caution-dark .caution-mark,
+.caution-dark .caution-list li,
+.caution-dark .caution-list-dark li {
+  color: var(--white) !important;
+}
+
+.caution-dark strong,
+.caution-dark em,
+.caution-dark .caution-tag,
+.caution-dark .caution-list li::before,
+.caution-dark .caution-list-dark li::before {
+  color: var(--orange) !important;
+}
 
 /* Ops list */
 .ops-list {
