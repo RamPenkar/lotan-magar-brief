@@ -94,3 +94,33 @@ const statObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.5 });
 
 document.querySelectorAll('[data-target]').forEach(el => statObserver.observe(el));
+
+/* Hero scroll parallax + fade.
+   Video translates down slower than scroll, content fades and drifts up. */
+const heroEl = document.querySelector('.hero');
+const heroBgEl = document.querySelector('.hero-bg');
+const heroGridEl = document.querySelector('.hero-grid');
+
+if (heroEl && heroBgEl && heroGridEl && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  let heroTicking = false;
+  const updateHero = () => {
+    const heroHeight = heroEl.offsetHeight;
+    const scrollY = window.scrollY;
+    if (scrollY < heroHeight * 1.1) {
+      const progress = Math.min(scrollY / heroHeight, 1);
+      // Video: parallax + subtle zoom
+      heroBgEl.style.transform = `translate3d(0, ${scrollY * 0.35}px, 0) scale(${1 + progress * 0.06})`;
+      // Content: fade + light parallax
+      heroGridEl.style.opacity = String(Math.max(0, 1 - progress * 1.25));
+      heroGridEl.style.transform = `translate3d(0, ${scrollY * -0.18}px, 0)`;
+    }
+    heroTicking = false;
+  };
+
+  window.addEventListener('scroll', () => {
+    if (!heroTicking) {
+      requestAnimationFrame(updateHero);
+      heroTicking = true;
+    }
+  }, { passive: true });
+}
