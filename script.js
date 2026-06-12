@@ -95,27 +95,60 @@ const statObserver = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('[data-target]').forEach(el => statObserver.observe(el));
 
-/* Hero scroll parallax + fade.
-   Video translates down slower than scroll, content fades and drifts up. */
+/* Hero scroll-scrubbed video.
+   Video frames track scroll progress through the hero section. */
 const heroEl = document.querySelector('.hero');
 const heroBgEl = document.querySelector('.hero-bg');
 const heroGridEl = document.querySelector('.hero-grid');
 
 if (heroEl && heroBgEl && heroGridEl && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   let heroTicking = false;
+  let targetTime = 0;
+  let currentTime = 0;
+  let rafId = null;
+
+  // Smooth tween toward target currentTime so scrubbing doesn't jitter.
+  const smoothScrub = () => {
+    if (!heroBgEl.duration || isNaN(heroBgEl.duration)) {
+      rafId = requestAnimationFrame(smoothScrub);
+      return;
+    }
+    const diff = targetTime - currentTime;
+    if (Math.abs(diff) > 0.005) {
+      currentTime += diff * 0.18;
+      try { heroBgEl.currentTime = currentTime; } catch (_) {}
+      rafId = requestAnimationFrame(smoothScrub);
+    } else {
+      rafId = null;
+    }
+  };
+
   const updateHero = () => {
     const heroHeight = heroEl.offsetHeight;
     const scrollY = window.scrollY;
-    if (scrollY < heroHeight * 1.1) {
-      const progress = Math.min(scrollY / heroHeight, 1);
-      // Video: parallax + subtle zoom
-      heroBgEl.style.transform = `translate3d(0, ${scrollY * 0.35}px, 0) scale(${1 + progress * 0.06})`;
-      // Content: fade + light parallax
-      heroGridEl.style.opacity = String(Math.max(0, 1 - progress * 1.25));
-      heroGridEl.style.transform = `translate3d(0, ${scrollY * -0.18}px, 0)`;
+    const progress = Math.min(Math.max(scrollY / heroHeight, 0), 1);
+
+    // Set target video time based on scroll progress.
+    if (heroBgEl.duration && !isNaN(heroBgEl.duration)) {
+      targetTime = progress * heroBgEl.duration;
+      if (rafId === null) rafId = requestAnimationFrame(smoothScrub);
     }
+
+    // Content: fade out as hero scrolls away.
+    heroGridEl.style.opacity = String(Math.max(0, 1 - progress * 1.25));
+    heroGridEl.style.transform = `translate3d(0, ${scrollY * -0.18}px, 0)`;
+
     heroTicking = false;
   };
+
+  // Ensure first frame is rendered (some browsers won't paint until play() or seek).
+  const primeVideo = () => {
+    if (heroBgEl.readyState >= 2) {
+      try { heroBgEl.currentTime = 0.001; } catch (_) {}
+    }
+  };
+  if (heroBgEl.readyState >= 2) primeVideo();
+  else heroBgEl.addEventListener('loadedmetadata', primeVideo, { once: true });
 
   window.addEventListener('scroll', () => {
     if (!heroTicking) {
