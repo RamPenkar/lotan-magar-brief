@@ -915,4 +915,11 @@ body {
   .ops-list li { padding-inline-start: 44px; }
   .ops-list li::before { font-size: 18px; top: 28px; }
   .lead { font-size: 22px; }
+
+  /* Zoom into the hero video on mobile so the action fills the frame
+     instead of being lost in the wide 16:9 crop. */
+  .hero-bg {
+    transform: scale(1.7);
+    transform-origin: 50% 55%;
+  }
 }

@@ -150,6 +150,20 @@ if (heroEl && heroBgEl && heroGridEl && !window.matchMedia('(prefers-reduced-mot
   if (heroBgEl.readyState >= 2) primeVideo();
   else heroBgEl.addEventListener('loadedmetadata', primeVideo, { once: true });
 
+  // iOS Safari unlock: scroll-driven currentTime updates are blocked until
+  // the video has been started by a user gesture. Call play+pause on first
+  // touch so subsequent scrubbing actually renders frames.
+  const unlockMobileVideo = () => {
+    const p = heroBgEl.play();
+    if (p && typeof p.then === 'function') {
+      p.then(() => { heroBgEl.pause(); updateHero(); }).catch(() => {});
+    } else {
+      try { heroBgEl.pause(); } catch (_) {}
+      updateHero();
+    }
+  };
+  document.addEventListener('touchstart', unlockMobileVideo, { once: true, passive: true });
+
   window.addEventListener('scroll', () => {
     if (!heroTicking) {
       requestAnimationFrame(updateHero);
