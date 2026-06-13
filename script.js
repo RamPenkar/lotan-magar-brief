@@ -141,28 +141,26 @@ if (heroEl && heroBgEl && heroGridEl && !window.matchMedia('(prefers-reduced-mot
     heroTicking = false;
   };
 
-  // Ensure first frame is rendered (some browsers won't paint until play() or seek).
-  const primeVideo = () => {
-    if (heroBgEl.readyState >= 2) {
-      try { heroBgEl.currentTime = 0.001; } catch (_) {}
-    }
+  // iOS Safari: scroll-driven currentTime updates are blocked until the
+  // video has actually started playing. We rely on the video tag's autoplay
+  // (muted + playsinline allow it on iOS) to start the video, then on the
+  // first 'playing' event we pause it and switch to scrub mode. By the time
+  // the user touches the screen, the video is already primed.
+  const onVideoPrimed = () => {
+    try { heroBgEl.pause(); } catch (_) {}
+    updateHero();
   };
-  if (heroBgEl.readyState >= 2) primeVideo();
-  else heroBgEl.addEventListener('loadedmetadata', primeVideo, { once: true });
+  heroBgEl.addEventListener('playing', onVideoPrimed, { once: true });
 
-  // iOS Safari unlock: scroll-driven currentTime updates are blocked until
-  // the video has been started by a user gesture. Call play+pause on first
-  // touch so subsequent scrubbing actually renders frames.
-  const unlockMobileVideo = () => {
+  // Fallback for browsers that block autoplay entirely: prime on first touch.
+  const unlockOnTouch = () => {
     const p = heroBgEl.play();
     if (p && typeof p.then === 'function') {
       p.then(() => { heroBgEl.pause(); updateHero(); }).catch(() => {});
-    } else {
-      try { heroBgEl.pause(); } catch (_) {}
-      updateHero();
     }
   };
-  document.addEventListener('touchstart', unlockMobileVideo, { once: true, passive: true });
+  document.addEventListener('touchstart', unlockOnTouch, { once: true, passive: true });
+  document.addEventListener('click', unlockOnTouch, { once: true, passive: true });
 
   window.addEventListener('scroll', () => {
     if (!heroTicking) {
